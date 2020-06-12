@@ -2,17 +2,27 @@ package com.educandoweb.course.entities;
 
 import java.io.Serializable;
 
-public class User implements Serializable {//gera cadeia em bytes para trafegar em redes e criar arquivos
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+//anotações indicando para JPA de como ira converter os objetos para o banco relacional
+//sempre depender da expecificação nunda da implementação (o maven cria os import dele)
+@Entity
+public class User implements Serializable {// gera cadeia em bytes para trafegar em redes e criar arquivos
 
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY) //ANOTATION PARA INDICAR para JPA que o ID é autoincrementavel, funciona para SQl MYsql e outros
+	private Long id;//para o JPA ela é uma chave numerica e autoincrementavel
 	private String name;
 	private String email;
 	private String phone;
 	private String password;
 
-	public User() {//construtor vazio obrigatorio em Spring Boot
+	public User() {// construtor vazio obrigatorio em Spring Boot
 
 	}
 
@@ -66,7 +76,7 @@ public class User implements Serializable {//gera cadeia em bytes para trafegar 
 	}
 
 	@Override
-	public int hashCode() {//hash code para comparação de objetos
+	public int hashCode() {// hash code para comparação de objetos
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
@@ -91,7 +101,8 @@ public class User implements Serializable {//gera cadeia em bytes para trafegar 
 	}
 
 	@Override
-	public String toString() {//define uma estruta basica de impressão dos objetos, senão aparece o endereço de memoria
+	public String toString() {// define uma estruta basica de impressão dos objetos, senão aparece o endereço
+								// de memoria
 		return "User [id=" + id + ", name=" + name + ", email=" + email + ", phone=" + phone + ", password=" + password
 				+ "]";
 	}
