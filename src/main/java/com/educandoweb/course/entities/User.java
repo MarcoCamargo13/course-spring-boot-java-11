@@ -9,6 +9,7 @@ import javax.persistence.Id;
 
 //anotações indicando para JPA de como ira converter os objetos para o banco relacional
 //sempre depender da expecificação nunda da implementação (o maven cria os import dele)
+//para testar a configuração do H2 pom + application.properties , ir no navegador http://localhost:8080/h2-console
 @Entity
 public class User implements Serializable {// gera cadeia em bytes para trafegar em redes e criar arquivos
 
