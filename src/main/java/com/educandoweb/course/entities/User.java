@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 //anotações indicando para JPA de como ira converter os objetos para o banco relacional
 //sempre depender da expecificação nunda da implementação (o maven cria os import dele)
 //para testar a configuração do H2 pom + application.properties , ir no navegador http://localhost:8080/h2-console
@@ -28,6 +30,7 @@ public class User implements Serializable {// gera cadeia em bytes para trafegar
 	private String phone;
 	private String password;
 
+	@JsonIgnore
 	//(mappedBy = "client") --> para acessar os pedido opcional, indica que foi mapeado a tabela de cliente
 	@OneToMany(mappedBy = "client") //a anotação é para indicar para o banco que é muito para 1(varios pedidos para um cliente)
 	private List<Order> orders = new ArrayList<>();// foi criada uma associação de 1 ..muitos, foi criado um get

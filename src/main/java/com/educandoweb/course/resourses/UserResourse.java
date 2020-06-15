@@ -18,21 +18,22 @@ public class UserResourse {// disponibiliza recursos web correspondente a entida
 	@Autowired // para o Spring fazer a injeção de dependecia automatico
 	private UserService service; // dependencia do serviçe
 
-	 // para indicar que é um metodo que responde o Rest do HTTP é inserido um
-	@GetMapping			// Anotation
+	// para indicar que é um metodo que responde o Rest do HTTP é inserido um
+	@GetMapping // Anotation
 	public ResponseEntity<List<User>> findAll() {
 		// o metodo findAll recebe uma lista de User
 		List<User> list = service.findAll();
 		return ResponseEntity.ok().body(list);
 	}
 
-	//CRIANDO UM END POINT PARA BUSCAR UM SUSUARIO POR ID
-	@GetMapping(value = "/{id}")//vai indicar que o get recebe um id na URL
-	//@PathVariable para o Spring aceitar que passar como parametro(value = "/{id}") do tipo Long
-	public ResponseEntity<User> findById(@PathVariable Long id){
+	// CRIANDO UM END POINT PARA BUSCAR UM SUSUARIO POR ID
+	@GetMapping(value = "/{id}") // vai indicar que o get recebe um id na URL
+	// @PathVariable para o Spring aceitar que passar como parametro(value =
+	// "/{id}") do tipo Long
+	public ResponseEntity<User> findById(@PathVariable Long id) {
 		User obj = service.findById(id);
-		return ResponseEntity.ok().body(obj);//metodo para retorna um usuario pelo URL
-		
+		return ResponseEntity.ok().body(obj);// metodo para retorna um usuario pelo URL
+
 	}
-	
+
 }
