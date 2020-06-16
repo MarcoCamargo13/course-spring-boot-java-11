@@ -11,20 +11,23 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.educandoweb.course.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 
 @Entity // indica que a classe é uma entidade
 @Table(name = "tb_order") // dar um nome a tabela para não conflitar com o comando do SQL order
 public class Order implements Serializable {
 	private static final long serialVersionUID = 1L;// para tranformar o codi em bytes para trafegr na rede
 
+	//private OrderStatus orderStatus;//declaração da classe orderStatus do tipo enum
+	private Integer orderStatus;//declarado integer por causa da modificação de Enum
+
 	@Id // indica que e uma chave em baixo auto incrementavel
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	// anottation para formatar o Json
-	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'ss:mm:ss'Z'", timezone = "GMT")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'ss:mm:ss'Z'", timezone = "GMT")
 	private Instant moment;// APARTIR do Java 8 apareceu para substituir o date
 
 	@ManyToOne // no pdf indica que a classe order tem muitos pedidos para um cliente
@@ -34,9 +37,11 @@ public class Order implements Serializable {
 	public Order() {
 	}
 
-	public Order(Long id, Instant moment, User client) {
+	public Order(Long id, Instant moment, OrderStatus orderStatus, User client) {
 		this.id = id;
 		this.moment = moment;
+		//this.orderStatus = orderStatus;//declaração de enum, os valores da classe são fixos utilizando a seguencia declarada, podendo acaretar problemas no futuro com manutenção
+		this.setOrderStatus(orderStatus);
 		this.client = client;
 	}
 
@@ -62,6 +67,16 @@ public class Order implements Serializable {
 
 	public void setClient(User client) {
 		this.client = client;
+	}
+
+	public OrderStatus getOrderStatus() {
+		//return OrderStatus; 
+		return OrderStatus.valueOf(orderStatus);//para converter orderStatus para inteiro, depois da alteração 
+	}
+
+	public void setOrderStatus(OrderStatus orderStatus) {
+		if (orderStatus != null)//verificar se não é null
+		this.orderStatus = orderStatus.getCode();//pegar o inteiro do Order Status
 	}
 
 	@Override
