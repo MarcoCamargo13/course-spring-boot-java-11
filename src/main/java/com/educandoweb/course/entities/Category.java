@@ -1,12 +1,15 @@
 package com.educandoweb.course.entities;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "tb_category")
@@ -19,9 +22,16 @@ public class Category implements Serializable {
 	private Long id;
 	private String name;
 
+	//categoria tem uma associação com produtos 1 para * e não o pruto não pode repetir por isso é usado p set
+	//Não temos SetProdutos para não troca a lista somente troca de itens
+	@Transient
+	private Set<Product> products = new HashSet<>();//instancia para que a coleção não comece nula e sim vazia
+	//set é uma interface(interface não pode ser instanciado) e tem que ser instancia por uma classe
+
 	public Category() {
 	}
 
+	//não se coloca coleções no contrutor
 	public Category(Long id, String name) {
 		super();
 		this.id = id;
@@ -42,6 +52,10 @@ public class Category implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Set<Product> getProducts() {
+		return products;
 	}
 
 	@Override
