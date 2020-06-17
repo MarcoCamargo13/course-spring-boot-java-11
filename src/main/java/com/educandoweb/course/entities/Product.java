@@ -8,8 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "tb_product")
@@ -24,8 +26,18 @@ public class Product implements Serializable {
 	private String description;
 	private Double price;
 	private String imgUrl;
-	
-	@Transient //evita que o JPA processe este item
+
+	// @Transient //@Transient evita que o JPA processe este item
+	@ManyToMany // indica muito para muitos, indica o relacionamento no bando de dados
+	// JoinTable configura o relacionamento indica quais são as tabelas com aschaves
+	// estrangeira associadas
+	// @JoinTable(name = "") nome da tabela de associação
+	// @JoinTable(name = "tb_produt_category", joinColumns = "category_id") indica a
+	// coluna para chave estrangeira, se esta anotação estiesse na outra coluna
+	// seria o inverso
+
+	@JoinTable(name = "tb_produt_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+
 	private Set<Category> categories = new HashSet<>();
 
 	public Product() {
@@ -80,7 +92,7 @@ public class Product implements Serializable {
 	public void setImgUrl(String imgUrl) {
 		this.imgUrl = imgUrl;
 	}
-	
+
 	public Set<Category> getCategories() {
 		return categories;
 	}

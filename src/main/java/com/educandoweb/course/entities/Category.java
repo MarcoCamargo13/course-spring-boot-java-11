@@ -8,8 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tb_category")
@@ -22,9 +24,11 @@ public class Category implements Serializable {
 	private Long id;
 	private String name;
 
+	@JsonIgnore 
 	//categoria tem uma associação com produtos 1 para * e não o pruto não pode repetir por isso é usado p set
 	//Não temos SetProdutos para não troca a lista somente troca de itens
-	@Transient
+	//@Transient  // para ignorar a verificação e carga
+	@ManyToMany(mappedBy = "categories") //indica a associação da outra tabela coleções da outra tabela
 	private Set<Product> products = new HashSet<>();//instancia para que a coleção não comece nula e sim vazia
 	//set é uma interface(interface não pode ser instanciado) e tem que ser instancia por uma classe
 
