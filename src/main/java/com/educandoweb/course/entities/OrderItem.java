@@ -6,16 +6,17 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.educandoweb.course.entities.pk.OrdemItemPk;
+import com.educandoweb.course.entities.pk.OrderItemPk;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "tb_ordem_item")
+@Table(name = "tb_order_item")
 public class OrderItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private OrdemItemPk id; // atributo identificador da chave primaria ---id composto
+	private OrderItemPk id =  new OrderItemPk(); // atributo identificador da chave primaria ---id composto
 
 	private Integer quantity;
 	private Double price;
@@ -24,7 +25,7 @@ public class OrderItem implements Serializable {
 
 	}
 
-	public OrderItem(Product product, Order order, Integer quantity, Double price) {// argumentos
+	public OrderItem(Order order, Product product, Integer quantity, Double price) {// argumentos
 		super();
 		id.setOrder(order); // com isso instancia o oerderItem com id, produto, order, quantity e price
 		id.setProduct(product);
@@ -44,6 +45,7 @@ public class OrderItem implements Serializable {
 		id.setOrder(order);
 	}
 
+	@JsonIgnore
 	public Order getOrder() {
 		return id.getOrder();
 	}
@@ -69,8 +71,6 @@ public class OrderItem implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((price == null) ? 0 : price.hashCode());
-		result = prime * result + ((quantity == null) ? 0 : quantity.hashCode());
 		return result;
 	}
 
@@ -88,17 +88,9 @@ public class OrderItem implements Serializable {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (price == null) {
-			if (other.price != null)
-				return false;
-		} else if (!price.equals(other.price))
-			return false;
-		if (quantity == null) {
-			if (other.quantity != null)
-				return false;
-		} else if (!quantity.equals(other.quantity))
-			return false;
 		return true;
 	}
+
+
 
 }

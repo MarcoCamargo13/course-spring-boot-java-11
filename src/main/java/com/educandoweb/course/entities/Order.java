@@ -2,6 +2,8 @@ package com.educandoweb.course.entities;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.educandoweb.course.enums.OrderStatus;
@@ -19,8 +22,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class Order implements Serializable {
 	private static final long serialVersionUID = 1L;// para tranformar o codi em bytes para trafegr na rede
 
-	//private OrderStatus orderStatus;//declaração da classe orderStatus do tipo enum
-	private Integer orderStatus;//declarado integer por causa da modificação de Enum
+	// private OrderStatus orderStatus;//declaração da classe orderStatus do tipo
+	// enum
+	private Integer orderStatus;// declarado integer por causa da modificação de Enum
 
 	@Id // indica que e uma chave em baixo auto incrementavel
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,15 +38,25 @@ public class Order implements Serializable {
 	@JoinColumn(name = "client_id") // colocando um nome para a chave estrangeira
 	private User client;
 
+	@OneToMany(mappedBy = "id.order") // um pedido para varios itens i id.item é que tem os pedidos
+	private Set<OrderItem> items = new HashSet<>(); // instanciando os items porque o id do OrdemItem possui o id +
+													// produtos e pedidos
+
 	public Order() {
 	}
 
 	public Order(Long id, Instant moment, OrderStatus orderStatus, User client) {
 		this.id = id;
 		this.moment = moment;
-		//this.orderStatus = orderStatus;//declaração de enum, os valores da classe são fixos utilizando a seguencia declarada, podendo acaretar problemas no futuro com manutenção
+		// this.orderStatus = orderStatus;//declaração de enum, os valores da classe são
+		// fixos utilizando a seguencia declarada, podendo acaretar problemas no futuro
+		// com manutenção
 		this.setOrderStatus(orderStatus);
 		this.client = client;
+	}
+
+	public Set<OrderItem> getItems() {
+		return items;
 	}
 
 	public Long getId() {
@@ -70,13 +84,13 @@ public class Order implements Serializable {
 	}
 
 	public OrderStatus getOrderStatus() {
-		//return OrderStatus; 
-		return OrderStatus.valueOf(orderStatus);//para converter orderStatus para inteiro, depois da alteração 
+		// return OrderStatus;
+		return OrderStatus.valueOf(orderStatus);// para converter orderStatus para inteiro, depois da alteração
 	}
 
 	public void setOrderStatus(OrderStatus orderStatus) {
-		if (orderStatus != null)//verificar se não é null
-		this.orderStatus = orderStatus.getCode();//pegar o inteiro do Order Status
+		if (orderStatus != null)// verificar se não é null
+			this.orderStatus = orderStatus.getCode();// pegar o inteiro do Order Status
 	}
 
 	@Override

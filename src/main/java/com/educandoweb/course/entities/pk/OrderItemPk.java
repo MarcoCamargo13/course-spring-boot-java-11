@@ -10,7 +10,7 @@ import com.educandoweb.course.entities.Order;
 import com.educandoweb.course.entities.Product;
 
 @Embeddable // chave auxiliar p rimaria de chave composta
-public class OrdemItemPk implements Serializable {
+public class OrderItemPk implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	// esta classe uma auxiliar por ser uma associação entre produtos(product) e
@@ -18,11 +18,12 @@ public class OrdemItemPk implements Serializable {
 	// nao possui construtores por ser uma classe auxiliar
 	@ManyToOne
 	@JoinColumn (name = "order_id")//nome da chave estrangea no BD relacional
-	private Product product;
 	private Order order;
 
 	@ManyToOne
 	@JoinColumn (name = "product_id")//nome da chave estrangea no BD relacional
+	private Product product;
+	
 	public Product getProduct() {
 		return product;
 	}
@@ -56,7 +57,7 @@ public class OrdemItemPk implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		OrdemItemPk other = (OrdemItemPk) obj;
+		OrderItemPk other = (OrderItemPk) obj;
 		if (order == null) {
 			if (other.order != null)
 				return false;
@@ -69,5 +70,7 @@ public class OrdemItemPk implements Serializable {
 			return false;
 		return true;
 	}
+
+
 
 }
