@@ -11,7 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tb_product")
@@ -28,17 +31,19 @@ public class Product implements Serializable {
 	private String imgUrl;
 
 	// @Transient //@Transient evita que o JPA processe este item
-	@ManyToMany // indica muito para muitos, indica o relacionamento no bando de dados
+	//@ManyToMany // indica muito para muitos, indica o relacionamento no bando de dados
 	// JoinTable configura o relacionamento indica quais são as tabelas com aschaves
 	// estrangeira associadas
 	// @JoinTable(name = "") nome da tabela de associação
 	// @JoinTable(name = "tb_produt_category", joinColumns = "category_id") indica a
 	// coluna para chave estrangeira, se esta anotação estiesse na outra coluna
 	// seria o inverso
-
+	@ManyToMany
 	@JoinTable(name = "tb_produt_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
-
 	private Set<Category> categories = new HashSet<>();
+	
+	@OneToMany(mappedBy = "id.product")
+	private Set<OrderItem> items = new HashSet<>();//para cada produto temos varios oredemitem
 
 	public Product() {
 		super();
@@ -95,6 +100,15 @@ public class Product implements Serializable {
 
 	public Set<Category> getCategories() {
 		return categories;
+	}
+	
+	@JsonIgnore
+	public Set<Order> getOrders(){
+		Set<Order> ret = new HashSet<>();
+		for(OrderItem x: items) {
+			ret.add(x.getOrder());
+		}
+		return ret;
 	}
 
 	@Override
