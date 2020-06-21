@@ -25,4 +25,8 @@ public class UserService {// criado uma classe de serviço para cuidar das trans
 		Optional<User> obj = repository.findById(id);//Optional é um objeto tipo <User>
 		return obj.get();
 	}
+	
+	public User insert(User obj) {//metodo para inserir um novo usuario no BD
+		return repository.save(obj); //neste metodo ele ja retorna na inserção o usuario
+	}
 }
