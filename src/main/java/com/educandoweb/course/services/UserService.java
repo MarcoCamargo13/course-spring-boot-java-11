@@ -4,11 +4,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.educandoweb.course.entities.User;
 import com.educandoweb.course.repositories.UserRepository;
+import com.educandoweb.course.services.exceptions.DatabaseException;
 import com.educandoweb.course.services.exceptions.ResourceNotFoundException;
+
+import net.bytebuddy.asm.Advice.Thrown;
 
 @Service // para indicar o registro no compnente do Spring para funcionar, temos tb Ex.
 			// @Component /@REpository
@@ -33,7 +38,16 @@ public class UserService {// criado uma classe de serviço para cuidar das trans
 	}
 
 	public void delete(Long id) {
+		try { //tratando a excessão
 		repository.deleteById(id);
+		}catch(EmptyResultDataAccessException e) {
+			//e.printStackTrace();//usado para capturar a exceção
+			throw new ResourceNotFoundException(id); //para padronizar as exceções
+		}catch (DataIntegrityViolationException e) {
+			//e.printStackTrace();//foi feito um teste rodanda a aplicação e deletado usuario 1 para pegar a DataIntegrityViolationException
+			throw new DatabaseException(e.getMessage());
+			//EXCESssão da camada de servico
+		}
 	}
 
 	// User porque retona um usuario atualizado
