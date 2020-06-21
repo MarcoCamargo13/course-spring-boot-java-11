@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,16 +52,24 @@ public class UserResourse {// disponibiliza recursos web correspondente a entida
 		// return ResponseEntity.ok().body(obj);// metodo para retorna um usuario pelo
 		// URL
 		return ResponseEntity.created(uri).body(obj);// creat ele espera um obj do tio uri, padrão http, quando retorna
-														// o 201, espera que a resposta contenha um cabeçalho tipo
-														// location
+		// o 201, espera que a resposta contenha um cabeçalho tipo
+		// location
 
 	}
 
 	// criando um endpoint para deletar o susuario
 	@DeleteMapping(value = "/{id}") // anoottion do spring
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
-		service.delete(id); //para deletar
-		return ResponseEntity.noContent().build();//resposta sem corpo nocontent
+		service.delete(id); // para deletar
+		return ResponseEntity.noContent().build();// resposta sem corpo nocontent
 		// OBs: codigo 201 no http indica que vc criou um novo recurso
+	}
+
+	// PARA O REST UTILIZAmos oanotation PutMapping
+	// public ResponseEntity<User> porque vai retorna um usuario atualizadp
+	@PutMapping(value = "/{id}") // indicando qual id ira utilizar
+	public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User obj) {
+		obj = service.update(id, obj);
+		return ResponseEntity.ok().body(obj);
 	}
 }

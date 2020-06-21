@@ -22,15 +22,34 @@ public class UserService {// criado uma classe de serviço para cuidar das trans
 	}
 
 	public User findById(Long id) {
-		Optional<User> obj = repository.findById(id);//Optional é um objeto tipo <User>
+		Optional<User> obj = repository.findById(id);// Optional é um objeto tipo <User>
 		return obj.get();
 	}
-	
-	public User insert(User obj) {//metodo para inserir um novo usuario no BD
-		return repository.save(obj); //neste metodo ele ja retorna na inserção o usuario
+
+	public User insert(User obj) {// metodo para inserir um novo usuario no BD
+		return repository.save(obj); // neste metodo ele ja retorna na inserção o usuario
 	}
-	
+
 	public void delete(Long id) {
 		repository.deleteById(id);
+	}
+
+	// User porque retona um usuario atualizado
+	// nome do metodo de update
+	// User Ob um objeto user dom os dados quer serão atualizados
+	public User update(Long id, User obj) {
+		// entity entidade monitorada pelo jpa
+		// getOne vai instanciar um usuario
+		// getOne não vai no BD, deixando o obj monitorado pelo JPA e trabalhar para
+		// depois enviar
+		User entity = repository.getOne(id);
+		updateData(entity, obj); // função para atualizar os dados entity baseado no obj
+		return repository.save(entity);
+	}
+
+	private void updateData(User entity, User obj) {// atualizar o entity baseado no obj
+		entity.setName(obj.getName());
+		entity.setEmail(obj.getEmail());
+		entity.setPhone(obj.getPhone());
 	}
 }
