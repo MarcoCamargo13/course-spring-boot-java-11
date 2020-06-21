@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.educandoweb.course.enums.OrderStatus;
@@ -25,6 +27,9 @@ public class Order implements Serializable {
 	// private OrderStatus orderStatus;//declaração da classe orderStatus do tipo
 	// enum
 	private Integer orderStatus;// declarado integer por causa da modificação de Enum
+
+	@OneToOne(mappedBy = "order", cascade = CascadeType.ALL) // mapeando as duas entidades para ter o mesmo id
+	private Payment payment;// associação do order 1 para 1
 
 	@Id // indica que e uma chave em baixo auto incrementavel
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +45,7 @@ public class Order implements Serializable {
 
 	@OneToMany(mappedBy = "id.order") // um pedido para varios itens i id.item é que tem os pedidos
 	private Set<OrderItem> items = new HashSet<>(); // instanciando os items porque o id do OrdemItem possui o id +
-													// produtos e pedidos
+											// produtos e pedidos
 
 	public Order() {
 	}
@@ -91,6 +96,22 @@ public class Order implements Serializable {
 	public void setOrderStatus(OrderStatus orderStatus) {
 		if (orderStatus != null)// verificar se não é null
 			this.orderStatus = orderStatus.getCode();// pegar o inteiro do Order Status
+	}
+
+	public Payment getPayment() {
+		return payment;
+	}
+
+	public void setPayment(Payment payment) {
+		this.payment = payment;
+	}
+
+	public Double getTotal() {
+		Double sum = 0.0;
+		for(OrderItem x: items ) {//lista de orderItem percorrendo alista de items
+		sum += x.getSubTotal();
+		}
+		return sum;
 	}
 
 	@Override
