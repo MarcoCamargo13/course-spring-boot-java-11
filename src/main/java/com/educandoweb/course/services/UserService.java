@@ -29,4 +29,8 @@ public class UserService {// criado uma classe de serviço para cuidar das trans
 	public User insert(User obj) {//metodo para inserir um novo usuario no BD
 		return repository.save(obj); //neste metodo ele ja retorna na inserção o usuario
 	}
+	
+	public void delete(Long id) {
+		repository.deleteById(id);
+	}
 }
