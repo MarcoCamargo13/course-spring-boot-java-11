@@ -3,6 +3,8 @@ package com.educandoweb.course.services;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -12,8 +14,6 @@ import com.educandoweb.course.entities.User;
 import com.educandoweb.course.repositories.UserRepository;
 import com.educandoweb.course.services.exceptions.DatabaseException;
 import com.educandoweb.course.services.exceptions.ResourceNotFoundException;
-
-import net.bytebuddy.asm.Advice.Thrown;
 
 @Service // para indicar o registro no compnente do Spring para funcionar, temos tb Ex.
 			// @Component /@REpository
@@ -29,7 +29,7 @@ public class UserService {// criado uma classe de serviço para cuidar das trans
 
 	public User findById(Long id) {
 		Optional<User> obj = repository.findById(id);// Optional é um objeto tipo <User>
-		//return obj.get();//antes do tratamento de excessão
+		// return obj.get();//antes do tratamento de excessão
 		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
@@ -38,15 +38,16 @@ public class UserService {// criado uma classe de serviço para cuidar das trans
 	}
 
 	public void delete(Long id) {
-		try { //tratando a excessão
-		repository.deleteById(id);
-		}catch(EmptyResultDataAccessException e) {
-			//e.printStackTrace();//usado para capturar a exceção
-			throw new ResourceNotFoundException(id); //para padronizar as exceções
-		}catch (DataIntegrityViolationException e) {
-			//e.printStackTrace();//foi feito um teste rodanda a aplicação e deletado usuario 1 para pegar a DataIntegrityViolationException
+		try { // tratando a excessão
+			repository.deleteById(id);
+		} catch (EmptyResultDataAccessException e) {
+			// e.printStackTrace();//usado para capturar a exceção
+			throw new ResourceNotFoundException(id); // para padronizar as exceções
+		} catch (DataIntegrityViolationException e) {
+			// e.printStackTrace();//foi feito um teste rodanda a aplicação e deletado
+			// usuario 1 para pegar a DataIntegrityViolationException
 			throw new DatabaseException(e.getMessage());
-			//EXCESssão da camada de servico
+			// EXCESssão da camada de servico
 		}
 	}
 
@@ -58,9 +59,16 @@ public class UserService {// criado uma classe de serviço para cuidar das trans
 		// getOne vai instanciar um usuario
 		// getOne não vai no BD, deixando o obj monitorado pelo JPA e trabalhar para
 		// depois enviar
-		User entity = repository.getOne(id);
-		updateData(entity, obj); // função para atualizar os dados entity baseado no obj
-		return repository.save(entity);
+
+		try {
+			User entity = repository.getOne(id);
+			updateData(entity, obj); // função para atualizar os dados entity baseado no obj
+			return repository.save(entity);
+		} catch (EntityNotFoundException e) {
+			// e.printStackTrace();
+			throw new ResourceNotFoundException(id);
+		}
+
 	}
 
 	private void updateData(User entity, User obj) {// atualizar o entity baseado no obj
